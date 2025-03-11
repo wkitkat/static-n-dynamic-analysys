@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Uploader</title>
+    <style>
+        @import url('https://my-website.com/necessary.css');
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        .file-list {
+            margin-top: 20px;
+        }
+        .file-item {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <center><h1>Опасный загрузчик файлов</h1></center>
+        <center><img style="width:30%" src="bg9.jpg" alt=""></center>
+        <input style="padding: 7pt 0;  background: azure; " type="file" id="fileInput">
+        <button onclick="uploadFile()">Загрузить файл</button>
+        <div class="file-list" id="fileList"></div>
+        <center><img style="width:30%; opacity: 0.03;" src="F1y1qJdX_fM.jpg" alt=""></center>
+    </div>
+
+    <script>
+        let files = [];
+        const logUploadActivity = false;
+
+        function checkFileExists(file) {
+            if (file) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function checkFileSize(file) {
+            const maxSize = 1024 * 1024;
+            if (file.size > maxSize) {
+                return false;
+            }
+            return true;
+        }
+
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const debugFileContent = event.target.result;
+                    files.push({
+                        name: file.name,
+                        content: event.target.result
+                    });
+                    renderFiles();
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Нужно выбрать файл.');
+            }
+        }
+
+        function renderFiles() {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+
+            files.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <strong>${file.name}</strong>
+                    <pre>${file.content}</pre>
+                    <button onclick="deleteFile(${index})">Удалить</button>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function deleteFile(index) {
+            files.splice(index, 1);
+            if (files.length >= 0) {
+                renderFiles();
+            }
+        }
+
+        function clearFileList() {
+            files = [];
+        }
+    </script>
+</body>
+</html>
